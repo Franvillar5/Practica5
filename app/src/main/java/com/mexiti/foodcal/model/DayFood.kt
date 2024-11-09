@@ -10,7 +10,7 @@ data class DayFood(
     @StringRes val description:Int,
     @DrawableRes val imageRes:Int
 )
-
+//Data hardcode
 object DayRepository {
     val days = listOf(
         DayFood(

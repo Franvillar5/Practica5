@@ -2,6 +2,8 @@ package com.mexiti.foodcal.ui.screens
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -17,6 +19,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -36,7 +42,14 @@ fun CardDayInfo(
     dayFood: DayFood,
     modifier: Modifier = Modifier
 ){
+    var descripVisibility by remember {
+        mutableStateOf(false)
+    }
     Card(
+        onClick = {
+                  descripVisibility = !descripVisibility
+
+        },
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp,
 
@@ -50,7 +63,7 @@ fun CardDayInfo(
             Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.space_component)))
             ShowImage(imageRes = dayFood.imageRes)
             Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.space_component)))
-            BodyContent(body = dayFood.description)
+            BodyContent(body = dayFood.description, descVisibility = descripVisibility)
         }
 
     }
@@ -107,17 +120,23 @@ fun DayTitle(
 @Composable
 fun BodyContent(
     @StringRes body: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    descVisibility: Boolean
 ){
-    Text(
-        text = stringResource(id = body),
-        style = MaterialTheme.typography.bodyLarge,
-        modifier = modifier
-            .width(dimensionResource(id = R.dimen.width_size))
-            .padding(
-                dimensionResource(id = R.dimen.padding_component)
-            )
-    )
+    AnimatedVisibility(visible = descVisibility) {
+        Text(
+            text = stringResource(id = body),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = modifier
+                .width(dimensionResource(id = R.dimen.width_size))
+                .padding(
+                    dimensionResource(id = R.dimen.padding_component)
+                )
+                .animateContentSize()
+        )
+
+
+    }
 
 }
 
@@ -153,7 +172,8 @@ fun ShowImagePreview(){
 fun BodyContentPreview(){
     FoodAppTheme {
         BodyContent(
-            R.string.description1
+            R.string.description1,
+            descVisibility = true
         )
     }
 
